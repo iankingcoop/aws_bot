@@ -11,7 +11,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 
 
-### tools to be called by the agent user the @tool decorator
+### tools to be called by the agent user the @tool decorator ###
 @tool
 def list_s3_buckets(query: str = "") -> str:
     """Lists all S3 buckets in the AWS account. 
@@ -35,26 +35,6 @@ def list_s3_buckets(query: str = "") -> str:
         return f"Error accessing S3: {e.response['Error']['Message']}"
     except Exception as e:
         return f"Unexpected error: {str(e)}"
-
-
-### init agent
-def create_simple_agent():
-    
-    agent = create_agent(
-        model="gpt-3.5-turbo", # cheaper than latest
-        tools=[
-            list_s3_buckets,
-            get_s3_bucket_contents,
-            check_public_s3_buckets,
-            get_ec2_instance_size,
-            get_iam_user_permissions
-        ],
-        system_prompt="""You are a security/infratructure assistant. 
-        When users ask about AWS resources, use the tools provided to gather information.
-        Provide clear, concise answers based on the tool results."""
-    )
-    
-    return agent
 
 
 @tool
@@ -344,7 +324,10 @@ def get_s3_bucket_contents(bucket_name: str) -> str:
             result += f"  - {key} ({format_size(size)})\n"
             
             # Track file types
-            ext = key.split('.')[-1].lower() if '.' in key else 'no_extension'
+            if '.' in key:
+                ext = key.split('.')[-1].lower()
+            else:
+                ext = 'no_extension'
             file_types[ext] = file_types.get(ext, 0) + 1
             
             # Check filename for sensitive keywords
@@ -352,8 +335,11 @@ def get_s3_bucket_contents(bucket_name: str) -> str:
                                  'private', 'confidential', 'ssn', 'credit', 'database',
                                  'backup', 'dump', 'export', 'api', 'auth']
             
-            if any(keyword in key.lower() for keyword in sensitive_keywords):
-                sensitive_files.append(key)
+            key_lower = key.lower()
+            for keyword in sensitive_keywords:
+                if keyword in key_lower:
+                    sensitive_files.append(key)
+                    break
             
             # Read text files to check contents
             if ext in ['txt', 'log', 'json', 'csv', 'xml', 'yaml', 'yml', 'conf', 'config', 'env']:
@@ -401,6 +387,27 @@ def get_s3_bucket_contents(bucket_name: str) -> str:
         return f"Error accessing bucket: {e.response['Error']['Message']}"
     except Exception as e:
         return f"Unexpected error: {str(e)}"
+
+
+### init agent ###
+def create_simple_agent():
+    
+    agent = create_agent(
+        model="gpt-3.5-turbo", # cheaper than latest model
+        tools=[
+            list_s3_buckets,
+            get_s3_bucket_contents,
+            check_public_s3_buckets,
+            get_ec2_instance_size,
+            get_iam_user_permissions
+        ],
+        system_prompt="""You are a security/infratructure assistant. 
+        When users ask about AWS resources, use the tools provided to gather information.
+        Provide clear, concise answers based on the tool results."""
+    )
+    
+    return agent
+
 
 def main():
     # Check for OpenAI API key

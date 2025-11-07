@@ -16,7 +16,7 @@ Results: You have 4 S3 buckets in your AWS account. The bucket names are:
 Question: list all my S3 buckets
 ------------------------------------------------------------
 
-Results: There are 4 S3 buckets in your AWS account. Here are the names of the buckets:
+Results: There are 4 S3 buckets in your AWS account:
 1. aws-bot-demo-12314
 2. aws-cloudtrail-logs-347464745167-b1ea4344
 3. bucket378736
@@ -27,27 +27,23 @@ Results: There are 4 S3 buckets in your AWS account. Here are the names of the b
 Question: what data does the S3 bucket aws-bot-demo-12314 hold?
 ------------------------------------------------------------
 
-Results: The S3 bucket "aws-bot-demo-12314" holds a total of 3 objects with a total size of 89.00 B. The objects are:
-- object_1.txt (16.00 B)
-- object_2.txt (8.00 B)
-- object_3.txt (65.00 B)
+Results: The S3 bucket "aws-bot-demo-12314" holds a total of 3 objects with a total size of 89.00 bytes. The objects in the bucket are:
+1. object_1.txt (16.00 bytes)
+2. object_2.txt (8.00 bytes)
+3. object_3.txt (65.00 bytes)
 
-There are 2 potentially sensitive files in the bucket:
-- object_1.txt (contains: password)
-- object_3.txt (contains: secret)
+Two potentially sensitive files were identified in the bucket:
+1. object_1.txt (contains: password)
+2. object_3.txt (contains: secret)
 
 
 ------------------------------------------------------------
 Question: does the bucket aws-bot-demo-12314 contain any sensitive data?
 ------------------------------------------------------------
 
-Results: The bucket "aws-bot-demo-12314" contains 3 objects with a total size of 89.00 B. It includes files named object_1.txt, object_2.txt, and object_3.txt.
-
-Sensitive data has been found in two objects:
-1. object_1.txt contains the word "password."
-2. object_3.txt contains the word "secret."
-
-It is recommended to review and secure these files to protect the sensitive information they contain.
+Results: The bucket "aws-bot-demo-12314" contains 3 objects with a total size of 89.00 B. Among the objects, there are 2 potentially sensitive files:
+1. object_1.txt (contains: password)
+2. object_3.txt (contains: secret)
 
 
 ------------------------------------------------------------
@@ -57,7 +53,7 @@ Question: what permissions does user aws_bot_user have?
 Results: The IAM user "aws_bot_user" has the following permissions:
 - Attached Managed Policy: AdministratorAccess
 - No inline policies
-- Not a member of any groups
+- No group memberships.
 
 
 ------------------------------------------------------------
@@ -68,5 +64,5 @@ Results: The EC2 instance at IP address 172.31.24.193 has the following details:
 - Instance ID: i-002ef6c12bb56de19
 - Instance Type: t2.micro
 - State: running
-- Size: Small
+- Size: small
 
